@@ -9,6 +9,8 @@ protocol CartDelegate: class {
 
 public class Cart {
 
+  public static let shared = Cart()
+
   public var images: [Image] = []
   fileprivate var lightBoxUIImages: [UIImage] = []
   public var video: Video?
@@ -16,7 +18,7 @@ public class Cart {
 
   // MARK: - Initialization
 
-  init() {
+  fileprivate init() {
 
   }
 

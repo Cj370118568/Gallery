@@ -69,10 +69,7 @@ class PagesController: UIViewController {
   // MARK: - Setup
 
   func setup() {
-    let usePageIndicator = controllers.count > 1
-    if usePageIndicator {
-      view.addSubview(pageIndicator)
-    }
+    view.addSubview(pageIndicator)
     view.addSubview(scrollView)
     scrollView.addSubview(scrollViewContentView)
 
@@ -80,11 +77,7 @@ class PagesController: UIViewController {
     pageIndicator.g_pin(height: 40)
 
     scrollView.g_pinUpward()
-    if usePageIndicator {
-      scrollView.g_pin(on: .bottom, view: pageIndicator, on: .top)
-    } else {
-      scrollView.g_pinDownward()
-    }
+    scrollView.g_pin(on: .bottom, view: pageIndicator, on: .top)
 
     scrollViewContentView.g_pinEdges()
 
