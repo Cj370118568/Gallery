@@ -206,7 +206,7 @@ class CameraView: UIView, UIGestureRecognizerDelegate {
     button.setTitleColor(UIColor.white, for: UIControlState())
     button.setTitleColor(UIColor.lightGray, for: .disabled)
     button.titleLabel?.font = Config.Font.Text.regular.withSize(16)
-    button.setTitle("Gallery.Done".g_localize(fallback: "Done"), for: UIControlState())
+    button.setTitle("Gallery.Done".g_localize(fallback: "完成"), for: UIControlState())
 
     return button
   }
@@ -238,7 +238,7 @@ class CameraView: UIView, UIGestureRecognizerDelegate {
   func makeShutterOverlayView() -> UIView {
     let view = UIView()
     view.alpha = 0
-    view.backgroundColor = UIColor.black
+    view.backgroundColor = UIColor.white
 
     return view
   }

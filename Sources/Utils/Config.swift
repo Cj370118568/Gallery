@@ -4,8 +4,8 @@ import AVFoundation
 public struct Config {
 
   public struct PageIndicator {
-    public static var backgroundColor: UIColor = UIColor(red: 0, green: 3/255, blue: 10/255, alpha: 1)
-    public static var textColor: UIColor = UIColor.white
+    public static var backgroundColor: UIColor = UIColor(red: 255/255, green: 255/255, blue: 255/255, alpha: 1)
+    public static var textColor: UIColor = UIColor.lightGray
   }
 
   public struct Camera {
@@ -17,14 +17,14 @@ public struct Config {
     }
 
     public struct BottomContainer {
-      public static var backgroundColor: UIColor = UIColor(red: 23/255, green: 25/255, blue: 28/255, alpha: 0.8)
+      public static var backgroundColor: UIColor = UIColor(red: 255/255, green: 255/255, blue: 255/255, alpha: 0.8)
     }
 
     public struct StackView {
       public static let imageCount: Int = 4
     }
     
-    public static var imageLimit: Int = 0
+    public static var imageLimit: Int = 1
     
   }
 
@@ -41,7 +41,7 @@ public struct Config {
     }
 
     public struct FrameView {
-      public static var fillColor: UIColor = UIColor(red: 50/255, green: 51/255, blue: 59/255, alpha: 1)
+      public static var fillColor: UIColor = UIColor(red: 255/255, green: 255/255, blue: 255/255, alpha: 1)
       public static var borderColor: UIColor = UIColor(red: 0, green: 239/255, blue: 155/255, alpha: 1)
     }
 
