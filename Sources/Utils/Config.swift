@@ -33,7 +33,7 @@ public struct Config {
   public struct Grid {
 
     public struct CloseButton {
-      public static var tintColor: UIColor = UIColor(red: 109/255, green: 107/255, blue: 132/255, alpha: 1)
+      public static var tintColor: UIColor = UIColor(red: 97/255, green: 120/255, blue: 240/255, alpha: 1)
     }
 
     public struct ArrowButton {
@@ -46,8 +46,8 @@ public struct Config {
     }
 
     struct Dimension {
-      static let columnCount: CGFloat = 4
-      static let cellSpacing: CGFloat = 2
+      static let columnCount: CGFloat = 3
+      static let cellSpacing: CGFloat = 3
     }
   }
 

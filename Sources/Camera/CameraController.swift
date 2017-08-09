@@ -82,7 +82,11 @@ class CameraController: UIViewController {
   func shutterButtonTouched(_ button: ShutterButton) {
     guard isBelowImageLimit() else { return }
     guard let previewLayer = cameraView.previewLayer else { return }
-
+    
+    if Config.Camera.imageLimit == 1 {
+        self.doneButtonTouched(UIButton())
+    }
+    
     button.isEnabled = false
     UIView.animate(withDuration: 0.1, animations: {
       self.cameraView.shutterOverlayView.alpha = 1

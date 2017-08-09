@@ -48,7 +48,7 @@ class VideosController: UIViewController {
     gridView.collectionView.delegate = self
     gridView.collectionView.register(VideoCell.self, forCellWithReuseIdentifier: String(describing: VideoCell.self))
 
-    gridView.arrowButton.updateText("Gallery.AllVideos".g_localize(fallback: "ALL VIDEOS"))
+    gridView.arrowButton.updateText("Gallery.AllVideos".g_localize(fallback: "ALL 视频"))
     gridView.arrowButton.arrow.isHidden = true
   }
 

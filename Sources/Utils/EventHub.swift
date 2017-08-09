@@ -14,4 +14,9 @@ class EventHub {
   var doneWithImages: Action?
   var doneWithVideos: Action?
   var stackViewTouched: Action?
+    
+    //选择了icloud上的图片
+    var imageError:Action?
+    
+    var didLoadCloud:Action?
 }

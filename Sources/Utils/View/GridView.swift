@@ -44,7 +44,7 @@ class GridView: UIView {
     }
 
     topView.g_pinUpward()
-    topView.g_pin(height: 40)
+    topView.g_pin(height: 64)
     bottomView.g_pinDownward()
     bottomView.g_pin(height: 80)
 
@@ -56,7 +56,7 @@ class GridView: UIView {
 
     bottomBlurView.g_pinEdges()
 
-    closeButton.g_pin(on: .top)
+    closeButton.g_pin(on: .centerY, view: topView)
     closeButton.g_pin(on: .left)
     closeButton.g_pin(size: CGSize(width: 40, height: 40))
 
@@ -103,7 +103,9 @@ class GridView: UIView {
 
   func makeCloseButton() -> UIButton {
     let button = UIButton(type: .custom)
-    button.setImage(Bundle.image("gallery_close")?.withRenderingMode(.alwaysTemplate), for: UIControlState())
+//    button.setImage(Bundle.image("gallery_close")?.withRenderingMode(.alwaysTemplate), for: UIControlState())
+    button.setTitle("取消", for: .normal)
+    button.setTitleColor(Config.Grid.CloseButton.tintColor, for: .normal)
     button.tintColor = Config.Grid.CloseButton.tintColor
 
     return button

@@ -7,6 +7,8 @@ public protocol GalleryControllerDelegate: class {
   func galleryController(_ controller: GalleryController, didSelectVideo video: Video)
   func galleryController(_ controller: GalleryController, requestLightbox images: [UIImage])
   func galleryControllerDidCancel(_ controller: GalleryController)
+    func galleryControllerSelectedImageError()
+    func didloadCloudImage()
 }
 
 public class GalleryController: UIViewController, PermissionControllerDelegate {
@@ -77,7 +79,7 @@ public class GalleryController: UIViewController, PermissionControllerDelegate {
 
   func makeImagesController() -> ImagesController {
     let controller = ImagesController()
-    controller.title = "Gallery.Images.Title".g_localize(fallback: "PHOTOS")
+    controller.title = "Gallery.Images.Title".g_localize(fallback: "图库")
     Cart.shared.add(delegate: controller)
 
     return controller
@@ -85,7 +87,7 @@ public class GalleryController: UIViewController, PermissionControllerDelegate {
 
   func makeCameraController() -> CameraController {
     let controller = CameraController()
-    controller.title = "Gallery.Camera.Title".g_localize(fallback: "CAMERA")
+    controller.title = "Gallery.Camera.Title".g_localize(fallback: "照片")
     Cart.shared.add(delegate: controller)
 
     return controller
@@ -93,7 +95,7 @@ public class GalleryController: UIViewController, PermissionControllerDelegate {
 
   func makeVideosController() -> VideosController {
     let controller = VideosController()
-    controller.title = "Gallery.Videos.Title".g_localize(fallback: "VIDEOS")
+    controller.title = "Gallery.Videos.Title".g_localize(fallback: "视频")
 
     return controller
   }
@@ -135,8 +137,27 @@ public class GalleryController: UIViewController, PermissionControllerDelegate {
 
     EventHub.shared.stackViewTouched = { [weak self] in
       if let strongSelf = self {
-        strongSelf.delegate?.galleryController(strongSelf, requestLightbox: Cart.shared.UIImages())
+        if Cart.shared.UIImages().count > 0 {
+            strongSelf.delegate?.galleryController(strongSelf, requestLightbox: Cart.shared.UIImages())
+        }
+        
       }
+    }
+    EventHub.shared.imageError = {
+        [weak self] in
+        if let strongSelf = self {
+            
+            strongSelf.delegate?.galleryControllerSelectedImageError()
+            
+        }
+            
+    }
+    
+    EventHub.shared.didLoadCloud = {
+        [weak self] in
+        if let strongSelf = self {
+            strongSelf.delegate?.didloadCloudImage()
+        }
     }
   }
 

@@ -11,7 +11,9 @@ class ImagesController: UIViewController {
   let library = ImagesLibrary()
   var selectedAlbum: Album?
   let once = Once()
-
+    
+    fileprivate let cloudmanager = PHCachingImageManager()
+    
   // MARK: - Life cycle
 
   override func viewDidLoad() {
@@ -205,13 +207,35 @@ extension ImagesController: UICollectionViewDataSource, UICollectionViewDelegate
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let item = items[(indexPath as NSIndexPath).item]
-        
-        if Cart.shared.images.contains(item) {
-            Cart.shared.remove(item)
-        } else {
-            if Config.Camera.imageLimit == 0 || Config.Camera.imageLimit > Cart.shared.images.count{
-                Cart.shared.add(item)
+        if Fetcher.fetchImages([item.asset]).count > 0 {
+            if Config.Camera.imageLimit == 1 {
+                self.doneButtonTouched(UIButton())
             }
+            
+            if Cart.shared.images.contains(item) {
+                Cart.shared.remove(item)
+            } else {
+                if Config.Camera.imageLimit == 0 || Config.Camera.imageLimit > Cart.shared.images.count{
+                    Cart.shared.add(item)
+                }
+            }
+        }
+        else {
+            let requestCloudOptions = PHImageRequestOptions()
+            requestCloudOptions.isNetworkAccessAllowed = true
+            
+            self.cloudmanager.requestImageData(for: item.asset, options: requestCloudOptions, resultHandler: { (data, dataUTI, orientation, info) in
+                EventHub.shared.didLoadCloud?()
+            })
+            
+//            self.fetchImageDataForAsset(item.asset, options: requestCloudOptions, completeBlock: {
+//                [weak self] in
+//                EventHub.shared.didLoadCloud?()
+//            })
+            
+            
+            //选择了的图片异常，例如在icloud上的图片
+            EventHub.shared.imageError?()
         }
 
     configureFrameViews()
