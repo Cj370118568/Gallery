@@ -85,6 +85,7 @@ class CameraController: UIViewController {
     
     if Config.Camera.imageLimit == 1 {
         self.doneButtonTouched(UIButton())
+        return 
     }
     
     button.isEnabled = false

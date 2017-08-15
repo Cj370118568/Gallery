@@ -208,9 +208,7 @@ extension ImagesController: UICollectionViewDataSource, UICollectionViewDelegate
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let item = items[(indexPath as NSIndexPath).item]
         if Fetcher.fetchImages([item.asset]).count > 0 {
-            if Config.Camera.imageLimit == 1 {
-                self.doneButtonTouched(UIButton())
-            }
+            
             
             if Cart.shared.images.contains(item) {
                 Cart.shared.remove(item)
@@ -218,6 +216,10 @@ extension ImagesController: UICollectionViewDataSource, UICollectionViewDelegate
                 if Config.Camera.imageLimit == 0 || Config.Camera.imageLimit > Cart.shared.images.count{
                     Cart.shared.add(item)
                 }
+            }
+            if Config.Camera.imageLimit == 1 {
+                self.doneButtonTouched(UIButton())
+                return
             }
         }
         else {
