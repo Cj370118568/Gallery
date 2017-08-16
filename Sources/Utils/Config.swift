@@ -26,6 +26,7 @@ public struct Config {
     
     public static var imageLimit: Int = 1
     
+    public static var isGifSupport = false
   }
 
     

@@ -1,5 +1,6 @@
 import UIKit
 import Photos
+import MobileCoreServices
 
 struct Fetcher {
 
@@ -19,7 +20,22 @@ struct Fetcher {
 
     return images
   }
-
+    
+    static func fetchGif(asset:PHAsset) -> Data? {
+        let requestOptions = PHImageRequestOptions()
+        var data:Data? = nil
+        requestOptions.isSynchronous = true
+        PHImageManager.default().requestImageData(for: asset, options: requestOptions, resultHandler: { (imageData, UTI, _, _) in
+            if let uti = UTI,let data1 = imageData ,
+                // you can also use UTI to make sure it's a gif
+                UTTypeConformsTo(uti as CFString, kUTTypeGIF) {
+                // save data here
+                data = data1
+            }
+        })
+        return data
+    }
+    
   static func fetchAsset(_ localIdentifer: String) -> PHAsset? {
     return PHAsset.fetchAssets(withLocalIdentifiers: [localIdentifer], options: nil).firstObject
   }

@@ -9,6 +9,8 @@ public protocol GalleryControllerDelegate: class {
   func galleryControllerDidCancel(_ controller: GalleryController)
     func galleryControllerSelectedImageError()
     func didloadCloudImage()
+    func didPickSinglePhoto(image:UIImage)
+    func didPickGif(data:Data)
 }
 
 public class GalleryController: UIViewController, PermissionControllerDelegate {
@@ -159,6 +161,22 @@ public class GalleryController: UIViewController, PermissionControllerDelegate {
             strongSelf.delegate?.didloadCloudImage()
         }
     }
+    EventHub.shared.didPickSinglePhoto = {
+        [weak self] image in
+        if let strongSelf = self {
+            strongSelf.delegate?.didPickSinglePhoto(image: image)
+        }
+    }
+    
+    EventHub.shared.didPickGif = {
+        [weak self] data in
+        if let strongSelf = self {
+            strongSelf.delegate?.didPickGif(data: data)
+        }
+    }
+    
+    
+    
   }
 
   // MARK: - PermissionControllerDelegate

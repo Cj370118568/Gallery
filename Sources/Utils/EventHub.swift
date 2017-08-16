@@ -5,7 +5,8 @@ class EventHub {
   typealias Action = () -> Void
 
   static let shared = EventHub()
-
+    
+    
   // MARK: Initialization
 
   init() {}
@@ -19,4 +20,8 @@ class EventHub {
     var imageError:Action?
     
     var didLoadCloud:Action?
+    
+    var didPickSinglePhoto:((UIImage) -> Void)?
+    
+    var didPickGif:((Data) -> Void)?
 }

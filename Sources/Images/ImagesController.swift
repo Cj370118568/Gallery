@@ -207,7 +207,8 @@ extension ImagesController: UICollectionViewDataSource, UICollectionViewDelegate
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let item = items[(indexPath as NSIndexPath).item]
-        if Fetcher.fetchImages([item.asset]).count > 0 {
+        let arr = Fetcher.fetchImages([item.asset])
+        if arr.count > 0 {
             
             
             if Cart.shared.images.contains(item) {
@@ -218,8 +219,17 @@ extension ImagesController: UICollectionViewDataSource, UICollectionViewDelegate
                 }
             }
             if Config.Camera.imageLimit == 1 {
-                self.doneButtonTouched(UIButton())
-                return
+                //若选了gif图
+                if let gifdata = Fetcher.fetchGif(asset: item.asset), Config.Camera.isGifSupport {
+                    EventHub.shared.didPickGif?(gifdata)
+                }
+                else {
+                    Cart.shared.remove(item)
+                    EventHub.shared.didPickSinglePhoto?(arr[0])
+//                    self.doneButtonTouched(UIButton())
+                    return
+                }
+                
             }
         }
         else {
