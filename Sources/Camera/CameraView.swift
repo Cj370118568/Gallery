@@ -47,7 +47,7 @@ class CameraView: UIView, UIGestureRecognizerDelegate {
       addSubview($0)
     }
 
-    [bottomView, shutterButton].forEach {
+    [bottomView, shutterButton, flashButton, rotateButton].forEach {
       bottomContainer.addSubview($0)
     }
 
@@ -55,7 +55,7 @@ class CameraView: UIView, UIGestureRecognizerDelegate {
       bottomView.addSubview($0 as! UIView)
     }
 
-    [closeButton, flashButton, rotateButton].forEach {
+    [closeButton].forEach {
       $0.g_addShadow()
     }
 
@@ -64,28 +64,32 @@ class CameraView: UIView, UIGestureRecognizerDelegate {
     insertSubview(focusImageView, belowSubview: bottomContainer)
     insertSubview(shutterOverlayView, belowSubview: bottomContainer)
 
-    closeButton.g_pin(on: .top)
-    closeButton.g_pin(on: .left)
-    closeButton.g_pin(size: CGSize(width: 44, height: 44))
+    closeButton.g_pin(on: .top, constant:18.5)
+    closeButton.g_pin(on: .left,constant:12)
+//    closeButton.g_pin(size: CGSize(width: 44, height: 44))
+    
+    
 
-    flashButton.g_pin(on: .centerY, view: closeButton)
-    flashButton.g_pin(on: .centerX)
-    flashButton.g_pin(size: CGSize(width: 60, height: 44))
-
-    rotateButton.g_pin(on: .top)
-    rotateButton.g_pin(on: .right)
-    rotateButton.g_pin(size: CGSize(width: 44, height: 44))
+    
 
     bottomContainer.g_pinDownward()
-    bottomContainer.g_pin(height: 80)
+    bottomContainer.g_pin(height: 118)
     bottomView.g_pinEdges()
 
-    stackView.g_pin(on: .centerY, constant: -4)
-    stackView.g_pin(on: .left, constant: 38)
+    stackView.g_pin(on: .centerY,constant:-3)
+    stackView.g_pin(on: .right,view:shutterButton, on:.left , constant: -15)
     stackView.g_pin(size: CGSize(width: 56, height: 56))
 
     shutterButton.g_pinCenter()
     shutterButton.g_pin(size: CGSize(width: 60, height: 60))
+    
+    flashButton.g_pin(on: .centerY, view: shutterButton)
+    flashButton.g_pin(on: .right, constant: -56)
+    flashButton.g_pin(size: CGSize(width: 13, height: 20))
+    
+    rotateButton.g_pin(on: .centerY, view: shutterButton)
+    rotateButton.g_pin(on: .left, constant: 56)
+    rotateButton.g_pin(size: CGSize(width: 19, height: 19))
     
     doneButton.g_pin(on: .centerY)
     doneButton.g_pin(on: .right, constant: -38)
@@ -103,7 +107,7 @@ class CameraView: UIView, UIGestureRecognizerDelegate {
     layer?.videoGravity = AVLayerVideoGravityResizeAspectFill
 
     self.layer.insertSublayer(layer!, at: 0)
-    layer?.frame = self.layer.bounds
+    layer?.frame = CGRect(x: 0, y: 0, width: self.frame.width, height: self.frame.height - 118)
 
     previewLayer = layer
   }
@@ -150,16 +154,21 @@ class CameraView: UIView, UIGestureRecognizerDelegate {
 
   func makeCloseButton() -> UIButton {
     let button = UIButton(type: .custom)
-    button.setImage(Bundle.image("gallery_close"), for: UIControlState())
-
+//    button.setImage(Bundle.image("gallery_close"), for: UIControlState())
+    
+    button.setTitle("取消", for: .normal)
+    button.setTitleColor(UIColor.white, for: .normal)
+    button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
+    button.tintColor = Config.Grid.CloseButton.tintColor
+    
     return button
   }
 
   func makeFlashButton() -> TripleButton {
     let states: [TripleButton.State] = [
-      TripleButton.State(title: "Gallery.Camera.Flash.Off".g_localize(fallback: "OFF"), image: Bundle.image("gallery_camera_flash_off")!),
-      TripleButton.State(title: "Gallery.Camera.Flash.On".g_localize(fallback: "ON"), image: Bundle.image("gallery_camera_flash_on")!),
-      TripleButton.State(title: "Gallery.Camera.Flash.Auto".g_localize(fallback: "AUTO"), image: Bundle.image("gallery_camera_flash_auto")!)
+      TripleButton.State(title: "Gallery.Camera.Flash.Off".g_localize(fallback: ""), image: Bundle.image("gallery_camera_flash_off")!),
+      TripleButton.State(title: "Gallery.Camera.Flash.On".g_localize(fallback: ""), image: Bundle.image("gallery_camera_flash_on")!),
+      TripleButton.State(title: "Gallery.Camera.Flash.Auto".g_localize(fallback: ""), image: Bundle.image("gallery_camera_flash_auto")!)
     ]
 
     let button = TripleButton(states: states)
@@ -176,7 +185,7 @@ class CameraView: UIView, UIGestureRecognizerDelegate {
 
   func makeBottomContainer() -> UIView {
     let view = UIView()
-
+    view.backgroundColor = UIColor.white
     return view
   }
 

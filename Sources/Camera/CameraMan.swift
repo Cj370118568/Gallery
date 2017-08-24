@@ -145,8 +145,16 @@ class CameraMan {
             }
             return
         }
-
-        self.savePhoto(image, location: location, completion: completion)
+        
+        let size = CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height - 167)
+        let imageView = UIImageView(frame: CGRect(origin: CGPoint.zero, size: size))
+        imageView.contentMode = .scaleAspectFill
+        imageView.image = image
+        UIGraphicsBeginImageContext(imageView.bounds.size)
+        imageView.layer.render(in: UIGraphicsGetCurrentContext()!)
+        let finialImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        self.savePhoto(finialImage ?? image, location: location, completion: completion)
       }
     }
   }

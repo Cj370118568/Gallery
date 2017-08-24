@@ -74,7 +74,7 @@ class PagesController: UIViewController {
     scrollView.addSubview(scrollViewContentView)
 
     pageIndicator.g_pinDownward()
-    pageIndicator.g_pin(height: 40)
+    pageIndicator.g_pin(height: 49)
 
     scrollView.g_pinUpward()
     scrollView.g_pin(on: .bottom, view: pageIndicator, on: .top)

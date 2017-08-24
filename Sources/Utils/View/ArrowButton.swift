@@ -63,7 +63,7 @@ class ArrowButton: UIButton {
   func makeLabel() -> UILabel {
     let label = UILabel()
     label.textColor = Config.Grid.ArrowButton.tintColor
-    label.font = Config.Font.Main.regular.withSize(16)
+    label.font = Config.Font.Main.bold.withSize(14)
     label.textAlignment = .center
 
     return label
