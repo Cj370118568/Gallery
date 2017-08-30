@@ -44,7 +44,7 @@ public struct Config {
 
     public struct FrameView {
       public static var fillColor: UIColor = UIColor(red: 255/255, green: 255/255, blue: 255/255, alpha: 1)
-      public static var borderColor: UIColor = UIColor(red: 0, green: 239/255, blue: 155/255, alpha: 1)
+      public static var borderColor: UIColor = UIColor(red: 97/255, green: 120/255, blue: 240/255, alpha: 1)
     }
 
     struct Dimension {
