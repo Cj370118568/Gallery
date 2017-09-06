@@ -92,7 +92,7 @@ class CameraView: UIView, UIGestureRecognizerDelegate {
     rotateButton.g_pin(size: CGSize(width: 19, height: 19))
     
     doneButton.g_pin(on: .centerY)
-    doneButton.g_pin(on: .right, constant: -38)
+    doneButton.g_pin(on: .left,view:shutterButton,on:.right, constant: 15)
 
     rotateOverlayView.g_pinEdges()
     blurView.g_pinEdges()
