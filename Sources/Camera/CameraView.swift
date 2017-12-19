@@ -64,6 +64,7 @@ class CameraView: UIView, UIGestureRecognizerDelegate {
     insertSubview(focusImageView, belowSubview: bottomContainer)
     insertSubview(shutterOverlayView, belowSubview: bottomContainer)
 
+<<<<<<< HEAD
     closeButton.g_pin(on: .top, constant:18.5)
     closeButton.g_pin(on: .left,constant:12)
 //    closeButton.g_pin(size: CGSize(width: 44, height: 44))
@@ -71,6 +72,29 @@ class CameraView: UIView, UIGestureRecognizerDelegate {
     
 
     
+=======
+    closeButton.g_pin(on: .left)
+    closeButton.g_pin(size: CGSize(width: 44, height: 44))
+
+    flashButton.g_pin(on: .centerY, view: closeButton)
+    flashButton.g_pin(on: .centerX)
+    flashButton.g_pin(size: CGSize(width: 60, height: 44))
+
+    rotateButton.g_pin(on: .right)
+    rotateButton.g_pin(size: CGSize(width: 44, height: 44))
+>>>>>>> hyperoslo/master
+
+    if #available(iOS 11, *) {
+      Constraint.on(
+        closeButton.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
+        rotateButton.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor)
+      )
+    } else {
+      Constraint.on(
+        closeButton.topAnchor.constraint(equalTo: topAnchor),
+        rotateButton.topAnchor.constraint(equalTo: topAnchor)
+      )
+    }
 
     bottomContainer.g_pinDownward()
     bottomContainer.g_pin(height: 118)
@@ -103,18 +127,29 @@ class CameraView: UIView, UIGestureRecognizerDelegate {
     guard previewLayer == nil else { return }
 
     let layer = AVCaptureVideoPreviewLayer(session: session)
-    layer?.autoreverses = true
-    layer?.videoGravity = AVLayerVideoGravityResizeAspectFill
+    layer.autoreverses = true
+    layer.videoGravity = .resizeAspectFill
 
+<<<<<<< HEAD
     self.layer.insertSublayer(layer!, at: 0)
     layer?.frame = CGRect(x: 0, y: 0, width: self.frame.width, height: self.frame.height - 118)
+=======
+    self.layer.insertSublayer(layer, at: 0)
+    layer.frame = self.layer.bounds
+>>>>>>> hyperoslo/master
 
     previewLayer = layer
   }
 
+  override func layoutSubviews() {
+    super.layoutSubviews()
+
+    previewLayer?.frame = self.layer.bounds
+  }
+
   // MARK: - Action
 
-  func viewTapped(_ gr: UITapGestureRecognizer) {
+  @objc func viewTapped(_ gr: UITapGestureRecognizer) {
     let point = gr.location(in: self)
 
     focusImageView.transform = CGAffineTransform.identity
@@ -134,7 +169,7 @@ class CameraView: UIView, UIGestureRecognizerDelegate {
 
   // MARK: - Timer
 
-  func timerFired(_ timer: Timer) {
+  @objc func timerFired(_ timer: Timer) {
     UIView.animate(withDuration: 0.3, animations: {
       self.focusImageView.alpha = 0
     }, completion: { _ in
@@ -154,6 +189,7 @@ class CameraView: UIView, UIGestureRecognizerDelegate {
 
   func makeCloseButton() -> UIButton {
     let button = UIButton(type: .custom)
+<<<<<<< HEAD
 //    button.setImage(Bundle.image("gallery_close"), for: UIControlState())
     
     button.setTitle("取消", for: .normal)
@@ -161,14 +197,24 @@ class CameraView: UIView, UIGestureRecognizerDelegate {
     button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
     button.tintColor = Config.Grid.CloseButton.tintColor
     
+=======
+    button.setImage(GalleryBundle.image("gallery_close"), for: UIControlState())
+
+>>>>>>> hyperoslo/master
     return button
   }
 
   func makeFlashButton() -> TripleButton {
     let states: [TripleButton.State] = [
+<<<<<<< HEAD
       TripleButton.State(title: "Gallery.Camera.Flash.Off".g_localize(fallback: ""), image: Bundle.image("gallery_camera_flash_off")!),
       TripleButton.State(title: "Gallery.Camera.Flash.On".g_localize(fallback: ""), image: Bundle.image("gallery_camera_flash_on")!),
       TripleButton.State(title: "Gallery.Camera.Flash.Auto".g_localize(fallback: ""), image: Bundle.image("gallery_camera_flash_auto")!)
+=======
+      TripleButton.State(title: "Gallery.Camera.Flash.Off".g_localize(fallback: "OFF"), image: GalleryBundle.image("gallery_camera_flash_off")!),
+      TripleButton.State(title: "Gallery.Camera.Flash.On".g_localize(fallback: "ON"), image: GalleryBundle.image("gallery_camera_flash_on")!),
+      TripleButton.State(title: "Gallery.Camera.Flash.Auto".g_localize(fallback: "AUTO"), image: GalleryBundle.image("gallery_camera_flash_auto")!)
+>>>>>>> hyperoslo/master
     ]
 
     let button = TripleButton(states: states)
@@ -178,7 +224,7 @@ class CameraView: UIView, UIGestureRecognizerDelegate {
 
   func makeRotateButton() -> UIButton {
     let button = UIButton(type: .custom)
-    button.setImage(Bundle.image("gallery_camera_rotate"), for: UIControlState())
+    button.setImage(GalleryBundle.image("gallery_camera_rotate"), for: UIControlState())
 
     return button
   }
@@ -223,7 +269,7 @@ class CameraView: UIView, UIGestureRecognizerDelegate {
   func makeFocusImageView() -> UIImageView {
     let view = UIImageView()
     view.frame.size = CGSize(width: 110, height: 110)
-    view.image = Bundle.image("gallery_camera_focus")
+    view.image = GalleryBundle.image("gallery_camera_focus")
     view.backgroundColor = .clear
     view.alpha = 0
 

@@ -32,17 +32,34 @@ class PagesController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
 
+    view.backgroundColor = .black
     setup()
   }
 
   override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
 
-    if scrollView.frame.size.width > 0 {
-      once.run {
-        goAndNotify()
-      }
+    guard scrollView.frame.size.width > 0 else {
+      return
     }
+
+    once.run {
+      DispatchQueue.main.async {
+        self.scrollToAndSelect(index: self.selectedIndex, animated: false)
+      }
+
+      notify()
+    }
+  }
+
+  override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+    let index = selectedIndex
+
+    coordinator.animate(alongsideTransition: { context in
+      self.scrollToAndSelect(index: index, animated: context.isAnimated)
+    }) { _ in }
+
+    super.viewWillTransition(to: size, with: coordinator)
   }
 
   // MARK: - Controls
@@ -69,6 +86,7 @@ class PagesController: UIViewController {
   // MARK: - Setup
 
   func setup() {
+<<<<<<< HEAD
     view.addSubview(pageIndicator)
     view.addSubview(scrollView)
     scrollView.addSubview(scrollViewContentView)
@@ -76,6 +94,31 @@ class PagesController: UIViewController {
     pageIndicator.g_pinDownward()
     pageIndicator.g_pin(height: 49)
 
+=======
+    let usePageIndicator = controllers.count > 1
+    if usePageIndicator {
+      view.addSubview(pageIndicator)
+      Constraint.on(
+        pageIndicator.leftAnchor.constraint(equalTo: pageIndicator.superview!.leftAnchor),
+        pageIndicator.rightAnchor.constraint(equalTo: pageIndicator.superview!.rightAnchor),
+        pageIndicator.heightAnchor.constraint(equalToConstant: 40)
+      )
+      
+      if #available(iOS 11, *) {
+        Constraint.on(
+          pageIndicator.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+        )
+      } else {
+        Constraint.on(
+          pageIndicator.bottomAnchor.constraint(equalTo: pageIndicator.superview!.bottomAnchor)
+        )
+      }
+    }
+    
+    view.addSubview(scrollView)
+    scrollView.addSubview(scrollViewContentView)
+
+>>>>>>> hyperoslo/master
     scrollView.g_pinUpward()
     scrollView.g_pin(on: .bottom, view: pageIndicator, on: .top)
 
@@ -105,14 +148,18 @@ class PagesController: UIViewController {
 
   // MARK: - Index
 
-  func goAndNotify() {
-    let point = CGPoint(x: scrollView.frame.size.width * CGFloat(selectedIndex), y: scrollView.contentOffset.y)
-
-    DispatchQueue.main.async {
-      self.scrollView.setContentOffset(point, animated: false)
+  fileprivate func scrollTo(index: Int, animated: Bool) {
+    guard !scrollView.isTracking && !scrollView.isDragging && !scrollView.isZooming else {
+      return
     }
 
-    notify()
+    let point = CGPoint(x: scrollView.frame.size.width * CGFloat(index), y: scrollView.contentOffset.y)
+    scrollView.setContentOffset(point, animated: animated)
+  }
+
+  fileprivate func scrollToAndSelect(index: Int, animated: Bool) {
+    scrollTo(index: index, animated: animated)
+    pageIndicator.select(index: index, animated: animated)
   }
 
   func updateAndNotify(_ index: Int) {
@@ -132,11 +179,9 @@ class PagesController: UIViewController {
 extension PagesController: PageIndicatorDelegate {
 
   func pageIndicator(_ pageIndicator: PageIndicator, didSelect index: Int) {
-    let point = CGPoint(x: scrollView.frame.size.width * CGFloat(index), y: scrollView.contentOffset.y)
-    scrollView.setContentOffset(point, animated: false)
+    scrollTo(index: index, animated: false)
     updateAndNotify(index)
   }
-
 }
 
 extension PagesController: UIScrollViewDelegate {

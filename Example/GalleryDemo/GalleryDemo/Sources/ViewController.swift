@@ -3,6 +3,7 @@ import Gallery
 import Lightbox
 import AVFoundation
 import AVKit
+import SVProgressHUD
 
 class ViewController: UIViewController, LightboxControllerDismissalDelegate, GalleryControllerDelegate {
 
@@ -32,8 +33,13 @@ class ViewController: UIViewController, LightboxControllerDismissalDelegate, Gal
     button.center = CGPoint(x: view.bounds.size.width/2, y: view.bounds.size.height/2)
   }
 
+<<<<<<< HEAD
   func buttonTouched(_ button: UIButton) {
     gallery = GalleryController(isVideoShow: false)
+=======
+  @objc func buttonTouched(_ button: UIButton) {
+    gallery = GalleryController()
+>>>>>>> hyperoslo/master
     gallery.delegate = self
     gallery.selectedIndex = .images
     present(gallery, animated: true, completion: nil)
@@ -42,7 +48,7 @@ class ViewController: UIViewController, LightboxControllerDismissalDelegate, Gal
   // MARK: - LightboxControllerDismissalDelegate
 
   func lightboxControllerWillDismiss(_ controller: LightboxController) {
-    gallery.reload(controller.images.flatMap({ $0.image }))
+
   }
 
   // MARK: - GalleryControllerDelegate
@@ -72,18 +78,33 @@ class ViewController: UIViewController, LightboxControllerDismissalDelegate, Gal
     }
   }
 
-  func galleryController(_ controller: GalleryController, didSelectImages images: [UIImage]) {
+  func galleryController(_ controller: GalleryController, didSelectImages images: [Image]) {
     controller.dismiss(animated: true, completion: nil)
     gallery = nil
   }
 
-  func galleryController(_ controller: GalleryController, requestLightbox images: [UIImage]) {
+  func galleryController(_ controller: GalleryController, requestLightbox images: [Image]) {
     LightboxConfig.DeleteButton.enabled = true
 
-    let lightbox = LightboxController(images: images.map({ LightboxImage(image: $0) }), startIndex: 0)
+    SVProgressHUD.show()
+    Image.resolve(images: images, completion: { [weak self] resolvedImages in
+      SVProgressHUD.dismiss()
+      self?.showLightbox(images: resolvedImages.flatMap({ $0 }))
+    })
+  }
+
+  // MARK: - Helper
+
+  func showLightbox(images: [UIImage]) {
+    guard images.count > 0 else {
+      return
+    }
+
+    let lightboxImages = images.map({ LightboxImage(image: $0) })
+    let lightbox = LightboxController(images: lightboxImages, startIndex: 0)
     lightbox.dismissalDelegate = self
 
-    controller.present(lightbox, animated: true, completion: nil)
+    gallery.present(lightbox, animated: true, completion: nil)
   }
 }
 

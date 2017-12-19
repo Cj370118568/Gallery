@@ -39,11 +39,12 @@ class ImagesController: UIViewController {
 
     dropdownController.view.g_pin(on: .left)
     dropdownController.view.g_pin(on: .right)
-    dropdownController.view.g_pin(on: .height, constant: -40)
-    dropdownController.topConstraint = dropdownController.view.g_pin(on: .top,
-                                                                     view: gridView.topView, on: .bottom,
-                                                                     constant: view.frame.size.height, priority: 999)
+    dropdownController.view.g_pin(on: .height, constant: -40) // subtract gridView.topView height
 
+    dropdownController.expandedTopConstraint = dropdownController.view.g_pin(on: .top, view: gridView.topView, on: .bottom, constant: 1)
+    dropdownController.expandedTopConstraint?.isActive = false
+    dropdownController.collapsedTopConstraint = dropdownController.view.g_pin(on: .top, on: .bottom)
+    
     stackView.g_pin(on: .centerY, constant: -4)
     stackView.g_pin(on: .left, constant: 38)
     stackView.g_pin(size: CGSize(width: 56, height: 56))
@@ -60,20 +61,20 @@ class ImagesController: UIViewController {
 
   // MARK: - Action
 
-  func closeButtonTouched(_ button: UIButton) {
+  @objc func closeButtonTouched(_ button: UIButton) {
     EventHub.shared.close?()
   }
 
-  func doneButtonTouched(_ button: UIButton) {
+  @objc func doneButtonTouched(_ button: UIButton) {
     EventHub.shared.doneWithImages?()
   }
 
-  func arrowButtonTouched(_ button: ArrowButton) {
+  @objc func arrowButtonTouched(_ button: ArrowButton) {
     dropdownController.toggle()
     button.toggle(dropdownController.expanding)
   }
 
-  func stackViewTouched(_ stackView: StackView) {
+  @objc func stackViewTouched(_ stackView: StackView) {
     EventHub.shared.stackViewTouched?()
   }
 
@@ -130,6 +131,7 @@ extension ImagesController: PageAware {
   func pageDidShow() {
     once.run {
       library.reload {
+        self.gridView.loadingIndicator.stopAnimating()
         self.dropdownController.albums = self.library.albums
         self.dropdownController.tableView.reloadData()
 
@@ -205,6 +207,7 @@ extension ImagesController: UICollectionViewDataSource, UICollectionViewDelegate
     return CGSize(width: size, height: size)
   }
 
+<<<<<<< HEAD
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let item = items[(indexPath as NSIndexPath).item]
         let arr = Fetcher.fetchImages([item.asset])
@@ -249,6 +252,18 @@ extension ImagesController: UICollectionViewDataSource, UICollectionViewDelegate
             //选择了的图片异常，例如在icloud上的图片
             EventHub.shared.imageError?()
         }
+=======
+  func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    let item = items[(indexPath as NSIndexPath).item]
+
+    if cart.images.contains(item) {
+      cart.remove(item)
+    } else {
+      if Config.Camera.imageLimit == 0 || Config.Camera.imageLimit > cart.images.count{
+        cart.add(item)
+      }
+    }
+>>>>>>> hyperoslo/master
 
     configureFrameViews()
   }

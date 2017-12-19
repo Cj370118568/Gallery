@@ -3,6 +3,7 @@ import Photos
 import MobileCoreServices
 
 struct Fetcher {
+<<<<<<< HEAD
 
   // TODO: Why not use screen size?
   static func fetchImages(_ assets: [PHAsset], size: CGSize = CGSize(width: 720, height: 1280)) -> [UIImage] {
@@ -36,6 +37,8 @@ struct Fetcher {
         return data
     }
     
+=======
+>>>>>>> hyperoslo/master
   static func fetchAsset(_ localIdentifer: String) -> PHAsset? {
     return PHAsset.fetchAssets(withLocalIdentifiers: [localIdentifer], options: nil).firstObject
   }

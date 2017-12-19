@@ -3,9 +3,9 @@ import AVFoundation
 
 public protocol GalleryControllerDelegate: class {
 
-  func galleryController(_ controller: GalleryController, didSelectImages images: [UIImage])
+  func galleryController(_ controller: GalleryController, didSelectImages images: [Image])
   func galleryController(_ controller: GalleryController, didSelectVideo video: Video)
-  func galleryController(_ controller: GalleryController, requestLightbox images: [UIImage])
+  func galleryController(_ controller: GalleryController, requestLightbox images: [Image])
   func galleryControllerDidCancel(_ controller: GalleryController)
     func galleryControllerSelectedImageError()
     func didloadCloudImage()
@@ -15,6 +15,7 @@ public protocol GalleryControllerDelegate: class {
 
 public class GalleryController: UIViewController, PermissionControllerDelegate {
 
+<<<<<<< HEAD
   lazy var imagesController: ImagesController = self.makeImagesController()
   lazy var cameraController: CameraController = self.makeCameraController()
   lazy var videosController: VideosController = self.makeVideosController()
@@ -30,6 +31,22 @@ public class GalleryController: UIViewController, PermissionControllerDelegate {
    public var isVideoShow = true
     public var selectedIndex:Page = .camera
     
+=======
+  public weak var delegate: GalleryControllerDelegate?
+
+  public let cart = Cart()
+
+  // MARK: - Init
+
+  public required init() {
+    super.init(nibName: nil, bundle: nil)
+  }
+
+  public required init?(coder aDecoder: NSCoder) {
+    fatalError("init(coder:) has not been implemented")
+  }
+
+>>>>>>> hyperoslo/master
   // MARK: - Life cycle
     
     
@@ -48,21 +65,31 @@ public class GalleryController: UIViewController, PermissionControllerDelegate {
 
     setup()
 
+<<<<<<< HEAD
     if Permission.hasPermissions {
       showMain()
+=======
+    if let pagesController = makePagesController() {
+      g_addChildController(pagesController)
+>>>>>>> hyperoslo/master
     } else {
-      showPermissionView()
+      let permissionController = makePermissionController()
+      g_addChildController(permissionController)
     }
   }
 
+<<<<<<< HEAD
   deinit {
     Cart.shared.reset()
   }
 
+=======
+>>>>>>> hyperoslo/master
   public override var prefersStatusBarHidden : Bool {
     return false
   }
 
+<<<<<<< HEAD
   // MARK: - Logic
 
   public func reload(_ images: [UIImage]) {
@@ -77,6 +104,8 @@ public class GalleryController: UIViewController, PermissionControllerDelegate {
     g_addChildController(permissionController)
   }
 
+=======
+>>>>>>> hyperoslo/master
   // MARK: - Child view controller
 
   func makeImagesController() -> ImagesController {
@@ -102,9 +131,39 @@ public class GalleryController: UIViewController, PermissionControllerDelegate {
     return controller
   }
 
+<<<<<<< HEAD
   func makePagesController() -> PagesController {
     let controller = self.isVideoShow ? PagesController(controllers: [imagesController, cameraController, videosController]) : PagesController(controllers: [imagesController, cameraController])
     controller.selectedIndex = selectedIndex.rawValue
+=======
+  func makePagesController() -> PagesController? {
+    guard Permission.Photos.status == .authorized else {
+      return nil
+    }
+
+    let useCamera = Permission.Camera.needsPermission && Permission.Camera.status == .authorized
+
+    let tabsToShow = Config.tabsToShow.flatMap { $0 != .cameraTab ? $0 : (useCamera ? $0 : nil) }
+
+    let controllers: [UIViewController] = tabsToShow.flatMap { tab in
+      if tab == .imageTab {
+        return makeImagesController()
+      } else if tab == .cameraTab {
+        return makeCameraController()
+      } else if tab == .videoTab {
+        return makeVideosController()
+      } else {
+        return nil
+      }
+    }
+
+    guard !controllers.isEmpty else {
+      return nil
+    }
+>>>>>>> hyperoslo/master
+
+    let controller = PagesController(controllers: controllers)
+    controller.selectedIndex = tabsToShow.index(of: Config.initialTab ?? .cameraTab) ?? 0
 
     return controller
   }
@@ -127,7 +186,11 @@ public class GalleryController: UIViewController, PermissionControllerDelegate {
 
     EventHub.shared.doneWithImages = { [weak self] in
       if let strongSelf = self {
+<<<<<<< HEAD
         strongSelf.delegate?.galleryController(strongSelf, didSelectImages: Cart.shared.UIImages())
+=======
+        strongSelf.delegate?.galleryController(strongSelf, didSelectImages: strongSelf.cart.images)
+>>>>>>> hyperoslo/master
       }
     }
 
@@ -139,10 +202,14 @@ public class GalleryController: UIViewController, PermissionControllerDelegate {
 
     EventHub.shared.stackViewTouched = { [weak self] in
       if let strongSelf = self {
+<<<<<<< HEAD
         if Cart.shared.UIImages().count > 0 {
             strongSelf.delegate?.galleryController(strongSelf, requestLightbox: Cart.shared.UIImages())
         }
         
+=======
+        strongSelf.delegate?.galleryController(strongSelf, requestLightbox: strongSelf.cart.images)
+>>>>>>> hyperoslo/master
       }
     }
     EventHub.shared.imageError = {
@@ -182,7 +249,9 @@ public class GalleryController: UIViewController, PermissionControllerDelegate {
   // MARK: - PermissionControllerDelegate
 
   func permissionControllerDidFinish(_ controller: PermissionController) {
-    showMain()
-    permissionController.g_removeFromParentController()
+    if let pagesController = makePagesController() {
+      g_addChildController(pagesController)
+      controller.g_removeFromParentController()
+    }
   }
 }
